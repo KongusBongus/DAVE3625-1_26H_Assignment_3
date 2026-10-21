@@ -1,98 +1,48 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import PlayerPanel from "../components/PlayerPanel";
+import { useGame } from "../store/gameStore";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+export default function LifeScreen() {
+  const { players, newGame, history } = useGame();
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <View style={styles.toolbar}>
+        {[2, 3, 4].map((n) => (
+          <Pressable key={n} style={styles.tbBtn} onPress={() => newGame(n, 40)}>
+            <Text style={styles.tbText}>{n} players (40)</Text>
+          </Pressable>
+        ))}
+        <Pressable style={styles.tbBtn} onPress={() => newGame(2, 20)}>
+          <Text style={styles.tbText}>2 players (20)</Text>
+        </Pressable>
+      </View>
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+      <View style={styles.grid}>
+        {players.map((p) => (
+          <View key={p.id} style={styles.cell}>
+            <PlayerPanel player={p} />
+          </View>
+        ))}
+      </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+      <Text style={styles.historyTitle}>History</Text>
+      {history.length === 0 && <Text style={styles.hText}>No changes yet.</Text>}
+      {history.slice(0, 20).map((h, i) => (
+        <Text key={i} style={styles.hText}>{h}</Text>
+      ))}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
+  container: { flex: 1, backgroundColor: "#0b1020" },
+  content: { padding: 8, paddingBottom: 40 },
+  toolbar: { flexDirection: "row", flexWrap: "wrap" },
+  tbBtn: { backgroundColor: "#4f46e5", borderRadius: 10, padding: 8, margin: 4 },
+  tbText: { color: "#fff" },
+  grid: { flexDirection: "row", flexWrap: "wrap", marginTop: 8 },
+  cell: { width: "50%", minWidth: 160 },
+  historyTitle: { color: "#fff", fontSize: 16, fontWeight: "700", marginTop: 16, marginBottom: 4 },
+  hText: { color: "#9ca3af", fontSize: 12 },
 });
