@@ -2,14 +2,23 @@ Magic The Gathering Card Game APP
 
 A fan-made application for playing Magic The Gathering with a inngame functionality to track life and search for card information and artwork retrieved from Scryfall.
 
-Features
+Features:
+
 Life counter — Keep track of players life, from 2 player 20 life up to 4 player 40 life.
+
 Miscellaneous counters — Keep track of poison, energy and experiance counters.
+
 Dice and coin — Roll a d6, d10, d20 or flip a coin.
+
 Card discovery — Explore Magic The Gathering cards through the application's interface.
+
 Card information — View card data provided by Scryfall.
+
 Card artwork — Fetch card images from Scryfall instead of bundling the card images directly with the application.
+
 Online data — Retrieve card information from an external card database, helping the application use up-to-date card data available through Scryfall.
+
+
 
 
 Explore the available cards. Use the application's interface to discover and view Magic The Gathering cards.
