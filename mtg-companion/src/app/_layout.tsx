@@ -12,7 +12,7 @@ export default function Layout() {
         tabBarLabelStyle: { fontSize: 14 },
       }}
     >
-      <Tabs.Screen name="index" options={{ title: "Life" }} />
+      <Tabs.Screen name="index" options={{ title: "Life", headerShown: false }} />
       <Tabs.Screen name="cards" options={{ title: "Cards" }} />
       <Tabs.Screen name="tools" options={{ title: "Dice" }} />
     </Tabs>

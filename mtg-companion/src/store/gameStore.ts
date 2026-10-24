@@ -1,6 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export interface Player {
   id: string;
@@ -22,7 +22,7 @@ interface GameState {
   changeLife: (id: string, delta: number) => void;
   logLife: (id: string, total: number) => void;
   changeCounter: (id: string, kind: "poison" | "energy" | "experience", delta: number) => void;
-  changeCommanderDamage: (id: string, fromId: string, delta: number) => void;
+  changeCommanderDamage: (id: string, key: string, delta: number) => void;
   rename: (id: string, name: string) => void;
   setBackground: (id: string, url?: string, artist?: string) => void;
 }
@@ -55,13 +55,11 @@ export const useGame = create<GameState>()(
           history: [],
         })),
 
-      // Silent: called on every tick while a button is held
       changeLife: (id, delta) =>
         set((s) => ({
           players: s.players.map((p) => (p.id === id ? { ...p, life: p.life + delta } : p)),
         })),
 
-      // One history line per press, with the total change
       logLife: (id, total) =>
         set((s) => ({
           history: [
@@ -77,17 +75,14 @@ export const useGame = create<GameState>()(
           ),
         })),
 
-      changeCommanderDamage: (id, fromId, delta) =>
+      // Commander damage counters go from 0 to 21
+      changeCommanderDamage: (id, key, delta) =>
         set((s) => ({
           players: s.players.map((p) => {
             if (p.id !== id) return p;
-            const current = p.commanderDamage[fromId] ?? 0;
-            const next = Math.max(0, current + delta);
-            return {
-              ...p,
-              life: p.life - (next - current),
-              commanderDamage: { ...p.commanderDamage, [fromId]: next },
-            };
+            const current = p.commanderDamage[key] ?? 0;
+            const next = Math.min(21, Math.max(0, current + delta));
+            return { ...p, commanderDamage: { ...p.commanderDamage, [key]: next } };
           }),
         })),
 
