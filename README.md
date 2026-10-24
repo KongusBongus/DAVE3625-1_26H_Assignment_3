@@ -19,6 +19,8 @@ Card artwork — Fetch card images from Scryfall instead of bundling the card im
 Online data — Retrieve card information from an external card database, helping the application use up-to-date card data available through Scryfall.
 
 
+- For the web application under the QR code there will be Web: http://localhost:8081, it can be opened inn vscode or inn a web browser.
+- When the application is opened on phone i used Expo go as host.
 
 
 Explore the available cards. Use the application's interface to discover and view Magic The Gathering cards.
